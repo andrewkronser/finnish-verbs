@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+    <script src="verbit.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css"/>
+    <link rel="stylesheet" href="main.css"/>
+    <title>Practice Finnish</title>
+</head>
+<body>
+    <div id="sidebar" class="container col-md-2 col-md-offset-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" class="active"><a href="#">vartalo (verbit)</a></li>
+            <li role="presentation"><a href="#">vartalo (nominit)</a></li>
+            <li role="presentation"><a href="#">preesens</a></li>
+        </ul>
+    </div>
+    <div class="container col-md-4">
+        <div class="well well-lg">
+            <h1 class="text-center">vartalo (verbit)</h1><hr/>
+            <h3><strong>perusumuoto:</strong> <span id="verbi"></span></h3><br/>
+            <div id="response-box" class="text-center">
+                <strong><h4 class="text-success" id="successText"> </h4>
+                    <h4 class="text-danger" id="failureText"> </h4></strong>
+            </div>
+            <label for="tyyppi">tyyppi</label>
+            <input type="number" class="form-control" id="tyyppi" min="1" max="6" placeholder="tyyppi"/></br>
+            <label for="vartalo">vartalo</label>
+            <input type="text" class="form-control" id="vartalo" placeholder="vartalo"/></br>
+            <button onclick="checkVartalo()" class="btn btn-primary form-control" id="checkVartalo">vastaa</button><hr/>
+            <button onclick="nextVerb()" class="btn btn-default form-control" id="nextVerb">seuraava</button>
+        </div>
+    </div>
+    <script>
+        var randIndex = Math.floor(Math.random() * verbit.length);
+        enable("vartalo");
+        function disable(id){document.getElementById(id).disabled = true;}
+        function disabled(id){return document.getElementById(id).disabled;}
+        function enable(id){document.getElementById(id).disabled = false;}
+        function checkVartalo(){
+            disable("vartalo");
+            disable("tyyppi");
+            var answer = {"tyyppi":document.getElementById("tyyppi").value, "vartalo":document.getElementById("vartalo").value};
+            if(answer.vartalo.toLowerCase() == verbit[randIndex].vartalo && answer.tyyppi == verbit[randIndex].tyyppi)
+                document.getElementById("successText").innerHTML = "kylla";
+            else if (answer.vartalo.toLowerCase() != verbit[randIndex].vartalo && answer.tyyppi != verbit[randIndex].tyyppi)
+                document.getElementById("failureText").innerHTML = "ei, se on " + verbit[randIndex].vartalo + " (" + verbit[randIndex].tyyppi + ")"; 
+            else if (answer.tyyppi != verbit[randIndex].tyyppi)
+                document.getElementById("failureText").innerHTML = "ei, se on tyyppi " + verbit[randIndex].tyyppi;
+            else if (answer.vartalo.toLowerCase() != verbit[randIndex].vartalo)
+                document.getElementById("failureText").innerHTML = "ei, vartalo on " + verbit[randIndex].vartalo; 
+
+        }
+	document.addEventListener("keyup", function(event) {
+    		event.preventDefault();
+                if (event.keyCode == 13){
+                    if(disabled("vartalo"))
+        		document.getElementById("nextVerb").click();
+                    else
+        		document.getElementById("checkVartalo").click();
+                }
+
+	});
+        function nextVerb(){
+            enable("vartalo");
+            enable("tyyppi");
+            document.getElementById("successText").innerHTML = "";
+            document.getElementById("failureText").innerHTML = "";
+            document.getElementById("vartalo").value = "";
+            document.getElementById("tyyppi").value = "";
+            var oldIndex = randIndex;
+            while(randIndex == oldIndex) randIndex = Math.floor(Math.random() * verbit.length);
+            document.getElementById("verbi").innerHTML = verbit[randIndex].perusmuoto;
+        }
+        nextVerb();
+    </script>
+</body>
